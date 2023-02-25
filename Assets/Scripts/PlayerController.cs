@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CapsuleCollider), typeof(Rigidbody), typeof(WeaponController))]
 public class PlayerController : NetworkBehaviour {
@@ -23,10 +24,6 @@ public class PlayerController : NetworkBehaviour {
     [SerializeField] private float groundDistance;
     [SerializeField] private float groundCheckOffset;
 
-    private void Awake() {
-        controls = new InputMain();
-    }
-
     public override void OnNetworkSpawn() {
         if (!IsServer && IsOwner) { //Only send an RPC to the server on the client that owns the NetworkObject that owns this NetworkBehaviour instance
             TestServerRpc(0, NetworkObjectId);
@@ -45,6 +42,10 @@ public class PlayerController : NetworkBehaviour {
     void TestServerRpc(int value, ulong sourceNetworkObjectId) {
         Debug.Log($"Server Received the RPC #{value} on NetworkObject #{sourceNetworkObjectId}");
         TestClientRpc(value, sourceNetworkObjectId);
+    }
+
+    private void Awake() {
+        controls = new InputMain();
     }
 
     private void Start() {
@@ -100,6 +101,14 @@ public class PlayerController : NetworkBehaviour {
         return Physics.SphereCast(origin, radius, Vector3.down, out RaycastHit groundHit, groundCheckOffset + groundDistance);
     }
 
+    private void ToggleLockState(InputAction.CallbackContext ctx) {
+        if (Cursor.lockState == CursorLockMode.Locked) {
+            Cursor.lockState = CursorLockMode.Confined;
+        } else {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+    }
+
     private void OnDrawGizmos() {
         if (Application.isPlaying) {
             Gizmos.color = Color.red;
@@ -112,12 +121,14 @@ public class PlayerController : NetworkBehaviour {
     private void OnEnable() {
         if (controls != null) {
             controls.Enable();
+            controls.Player.ToggleLockState.performed += ToggleLockState;
         }
     }
 
     private void OnDisable() {
         if (controls != null) {
             controls.Disable();
+            controls.Player.ToggleLockState.performed -= ToggleLockState;
         }
     }
 }

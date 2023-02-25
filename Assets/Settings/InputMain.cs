@@ -71,6 +71,15 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ToggleLockState"",
+                    ""type"": ""Button"",
+                    ""id"": ""34227fa3-580b-4a31-a50a-fbe05118b709"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +181,17 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
                     ""action"": ""EquipSecondWeapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fb285fd3-d79c-42b0-b1db-fa291b2dafa0"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleLockState"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -185,6 +205,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_EquipPrimaryWeapon = m_Player.FindAction("EquipPrimaryWeapon", throwIfNotFound: true);
         m_Player_EquipSecondWeapon = m_Player.FindAction("EquipSecondWeapon", throwIfNotFound: true);
+        m_Player_ToggleLockState = m_Player.FindAction("ToggleLockState", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -251,6 +272,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Crouch;
     private readonly InputAction m_Player_EquipPrimaryWeapon;
     private readonly InputAction m_Player_EquipSecondWeapon;
+    private readonly InputAction m_Player_ToggleLockState;
     public struct PlayerActions
     {
         private @InputMain m_Wrapper;
@@ -260,6 +282,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
         public InputAction @EquipPrimaryWeapon => m_Wrapper.m_Player_EquipPrimaryWeapon;
         public InputAction @EquipSecondWeapon => m_Wrapper.m_Player_EquipSecondWeapon;
+        public InputAction @ToggleLockState => m_Wrapper.m_Player_ToggleLockState;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -284,6 +307,9 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
             @EquipSecondWeapon.started += instance.OnEquipSecondWeapon;
             @EquipSecondWeapon.performed += instance.OnEquipSecondWeapon;
             @EquipSecondWeapon.canceled += instance.OnEquipSecondWeapon;
+            @ToggleLockState.started += instance.OnToggleLockState;
+            @ToggleLockState.performed += instance.OnToggleLockState;
+            @ToggleLockState.canceled += instance.OnToggleLockState;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -303,6 +329,9 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
             @EquipSecondWeapon.started -= instance.OnEquipSecondWeapon;
             @EquipSecondWeapon.performed -= instance.OnEquipSecondWeapon;
             @EquipSecondWeapon.canceled -= instance.OnEquipSecondWeapon;
+            @ToggleLockState.started -= instance.OnToggleLockState;
+            @ToggleLockState.performed -= instance.OnToggleLockState;
+            @ToggleLockState.canceled -= instance.OnToggleLockState;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -327,5 +356,6 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         void OnCrouch(InputAction.CallbackContext context);
         void OnEquipPrimaryWeapon(InputAction.CallbackContext context);
         void OnEquipSecondWeapon(InputAction.CallbackContext context);
+        void OnToggleLockState(InputAction.CallbackContext context);
     }
 }
