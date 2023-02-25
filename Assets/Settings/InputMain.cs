@@ -53,6 +53,24 @@ public partial class @InputMain : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""EquipPrimaryWeapon"",
+                    ""type"": ""Value"",
+                    ""id"": ""1dbab4c9-55b2-4319-bcf4-bc5716efba9a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""EquipSecondWeapon"",
+                    ""type"": ""Value"",
+                    ""id"": ""989e0ed8-9259-4e04-a28d-1e9e7ea5391d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -132,6 +150,28 @@ public partial class @InputMain : IInputActionCollection2, IDisposable
                     ""action"": ""Crouch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c2b391e-fca8-478e-94ec-90813310e725"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EquipPrimaryWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a8ecf37a-3385-40fa-9ceb-76f625aea1c3"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EquipSecondWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -143,6 +183,8 @@ public partial class @InputMain : IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
+        m_Player_EquipPrimaryWeapon = m_Player.FindAction("EquipPrimaryWeapon", throwIfNotFound: true);
+        m_Player_EquipSecondWeapon = m_Player.FindAction("EquipSecondWeapon", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -205,6 +247,8 @@ public partial class @InputMain : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Crouch;
+    private readonly InputAction m_Player_EquipPrimaryWeapon;
+    private readonly InputAction m_Player_EquipSecondWeapon;
     public struct PlayerActions
     {
         private @InputMain m_Wrapper;
@@ -212,6 +256,8 @@ public partial class @InputMain : IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
+        public InputAction @EquipPrimaryWeapon => m_Wrapper.m_Player_EquipPrimaryWeapon;
+        public InputAction @EquipSecondWeapon => m_Wrapper.m_Player_EquipSecondWeapon;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -230,6 +276,12 @@ public partial class @InputMain : IInputActionCollection2, IDisposable
                 @Crouch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
                 @Crouch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
                 @Crouch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
+                @EquipPrimaryWeapon.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimaryWeapon;
+                @EquipPrimaryWeapon.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimaryWeapon;
+                @EquipPrimaryWeapon.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimaryWeapon;
+                @EquipSecondWeapon.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipSecondWeapon;
+                @EquipSecondWeapon.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipSecondWeapon;
+                @EquipSecondWeapon.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipSecondWeapon;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -243,6 +295,12 @@ public partial class @InputMain : IInputActionCollection2, IDisposable
                 @Crouch.started += instance.OnCrouch;
                 @Crouch.performed += instance.OnCrouch;
                 @Crouch.canceled += instance.OnCrouch;
+                @EquipPrimaryWeapon.started += instance.OnEquipPrimaryWeapon;
+                @EquipPrimaryWeapon.performed += instance.OnEquipPrimaryWeapon;
+                @EquipPrimaryWeapon.canceled += instance.OnEquipPrimaryWeapon;
+                @EquipSecondWeapon.started += instance.OnEquipSecondWeapon;
+                @EquipSecondWeapon.performed += instance.OnEquipSecondWeapon;
+                @EquipSecondWeapon.canceled += instance.OnEquipSecondWeapon;
             }
         }
     }
@@ -252,5 +310,7 @@ public partial class @InputMain : IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
+        void OnEquipPrimaryWeapon(InputAction.CallbackContext context);
+        void OnEquipSecondWeapon(InputAction.CallbackContext context);
     }
 }
