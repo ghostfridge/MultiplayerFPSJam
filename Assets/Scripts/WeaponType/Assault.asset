@@ -9,14 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1a7bc6ffe0cb9d408af0cc705dce799, type: 3}
-  m_Name: Weapon 1
+  m_Script: {fileID: 11500000, guid: 798ba11fab3c57446a500c1565e93651, type: 3}
+  m_Name: Assault
   m_EditorClassIdentifier: 
-  id: weapon1
-  displayName: Weapon 1
-  properties:
-    damage: 10
-    ammo: 30
-    fireRate: 150
-    reloadTime: 3
-    type: {fileID: 11400000, guid: 956703930e4961540b8952c47f9491a6, type: 2}
+  fireMode: 1

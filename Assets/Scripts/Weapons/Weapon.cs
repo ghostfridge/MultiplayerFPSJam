@@ -11,16 +11,9 @@ public class Weapon : ScriptableObject {
 
 [System.Serializable]
 public struct WeaponProperties {
+    public WeaponType type;
     public float damage;
     public int ammo;
     public float fireRate;
     public float reloadTime;
-    public enum Type {
-        Pistol,
-        Rifle,
-        Shotgun,
-        Sniper,
-        Melee
-    }
-    public Type type;
 }
