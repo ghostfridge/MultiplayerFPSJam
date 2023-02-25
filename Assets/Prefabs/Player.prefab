@@ -296,6 +296,7 @@ GameObject:
   - component: {fileID: 4832717371858304780}
   - component: {fileID: -5243770343191492224}
   - component: {fileID: -2195935753432478294}
+  - component: {fileID: 8421189658070441949}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -363,11 +364,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   head: {fileID: 1429542634680536827}
+  primaryWeapon: {fileID: 11400000, guid: 8ef36316796b55240804f15df63b205a, type: 2}
+  secondaryWeapon: {fileID: 11400000, guid: c033b6f64aeff3440b43f2de5489494e, type: 2}
   lookSensitivity: 0.1
   moveSpeed: 5
   groundDistance: 0.05
   groundCheckOffset: 0.01
   crouchScale: 0.6
+--- !u!114 &8421189658070441949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8206469288159444616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bae283d75e19ec419cb1004d24b4d5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapon: {fileID: 0}
 --- !u!1 &9102057786515590886
 GameObject:
   m_ObjectHideFlags: 0
