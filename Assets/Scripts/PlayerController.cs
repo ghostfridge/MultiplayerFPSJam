@@ -17,23 +17,16 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private float groundDistance;
     [SerializeField] private float groundCheckOffset;
 
-    [Header("Crouch Settings")]
-    [SerializeField] private float crouchScale;
-    private float defaultScale;
-    private bool crouching;
-
     private void Awake() {
         controls = new InputMain();
     }
 
     private void Start() {
         Cursor.lockState = CursorLockMode.Locked;
-        defaultScale = transform.localScale.y;
     }
 
     private void Update() {
         PerformLooking();
-        PerformCrouch();
     }
 
     private void FixedUpdate() {
@@ -65,21 +58,6 @@ public class PlayerController : MonoBehaviour {
         rb.velocity = velocity;
     }
 
-    private void PerformCrouch() {
-        bool newState = controls.Player.Crouch.ReadValue<float>() != 0f;
-        if (!newState) {
-            CapsuleCollider col = GetComponent<CapsuleCollider>();
-
-            bool obstructed = Physics.SphereCast(transform.position, col.radius, Vector3.up, out RaycastHit hit, col.height - col.radius - 0.01f);
-            if (obstructed) return;
-        }
-
-        if (crouching != newState) {
-            crouching = newState;
-            transform.localScale = new Vector3(transform.localScale.x, crouching ? crouchScale : defaultScale, transform.localScale.z);
-        }
-    }
-
     private bool IsGrounded() {
         CapsuleCollider col = GetComponent<CapsuleCollider>();
 
@@ -94,11 +72,6 @@ public class PlayerController : MonoBehaviour {
 
             Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
             Gizmos.DrawLine(origin, origin + Vector3.down * (groundDistance + groundCheckOffset));
-
-            if (crouching) {
-                float crouchLength = (defaultScale - (defaultScale * crouchScale)) * 2.5f;
-                Gizmos.DrawLine(transform.position + Vector3.up * crouchScale * 2f, transform.position + Vector3.up * (defaultScale + crouchLength));
-            }
         }
     }
 
