@@ -10,6 +10,8 @@ public class PlayerController : NetworkBehaviour {
     private CapsuleCollider col;
     private Rigidbody rb;
     private WeaponController weaponController;
+    
+    private bool isCursorCaptured;
 
     [SerializeField] private Transform head;
     [SerializeField] private Weapon primaryWeapon;
@@ -23,6 +25,22 @@ public class PlayerController : NetworkBehaviour {
     [SerializeField] private float moveSpeed;
     [SerializeField] private float groundDistance;
     [SerializeField] private float groundCheckOffset;
+
+    public override void OnNetworkSpawn() {
+        if (IsOwner && controls != null) {
+            controls.Enable();
+            controls.Player.ToggleCursorCapture.performed += ToggleCursorCapture;
+            controls.Player.CaptureCursor.performed += CaptureCursor;
+        }
+    }
+
+    public override void OnNetworkDespawn() {
+        if (IsOwner && controls != null) {
+            controls.Disable();
+            controls.Player.ToggleCursorCapture.performed -= ToggleCursorCapture;
+            controls.Player.CaptureCursor.performed -= CaptureCursor;
+        }
+    }
 
     private void Awake() {
         controls = new InputMain();
@@ -39,12 +57,14 @@ public class PlayerController : NetworkBehaviour {
     }
 
     private void Update() {
-        PerformLooking();
+        if (isCursorCaptured) {
+            PerformLooking();
 
-        if (controls.Player.EquipPrimaryWeapon.triggered) {
-            weaponController.weapon = primaryWeapon;
-        } else if (controls.Player.EquipSecondWeapon.triggered) {
-            weaponController.weapon = secondaryWeapon;
+            if (controls.Player.EquipPrimaryWeapon.triggered) {
+                weaponController.weapon = primaryWeapon;
+            } else if (controls.Player.EquipSecondWeapon.triggered) {
+                weaponController.weapon = secondaryWeapon;
+            }
         }
     }
 
@@ -81,10 +101,15 @@ public class PlayerController : NetworkBehaviour {
         return Physics.SphereCast(origin, radius, Vector3.down, out RaycastHit groundHit, groundCheckOffset + groundDistance);
     }
 
-    private void ToggleLockState(InputAction.CallbackContext ctx) {
-        if (Cursor.lockState == CursorLockMode.Locked) {
-            Cursor.lockState = CursorLockMode.Confined;
-        } else {
+    private void ToggleCursorCapture(InputAction.CallbackContext ctx) {
+        isCursorCaptured = !isCursorCaptured;
+        Cursor.lockState = isCursorCaptured ? CursorLockMode.Locked : CursorLockMode.None;
+    }
+
+    private void CaptureCursor(InputAction.CallbackContext ctx) {
+        // Only capture if there are no current interactions
+        if (GUIUtility.hotControl == 0) {
+            isCursorCaptured = true;
             Cursor.lockState = CursorLockMode.Locked;
         }
     }
@@ -95,20 +120,6 @@ public class PlayerController : NetworkBehaviour {
 
             Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
             Gizmos.DrawLine(origin, origin + Vector3.down * (groundDistance + groundCheckOffset));
-        }
-    }
-
-    private void OnEnable() {
-        if (controls != null) {
-            controls.Enable();
-            controls.Player.ToggleLockState.performed += ToggleLockState;
-        }
-    }
-
-    private void OnDisable() {
-        if (controls != null) {
-            controls.Disable();
-            controls.Player.ToggleLockState.performed -= ToggleLockState;
         }
     }
 }
