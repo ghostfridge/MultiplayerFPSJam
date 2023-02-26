@@ -35,7 +35,8 @@ public class PlayerController : NetworkBehaviour {
                 controls.Player.CaptureCursor.performed += CaptureCursor;
             }
 
-            GameObject.Instantiate(cameraPrefab, head);
+            GameObject cam = GameObject.Instantiate(cameraPrefab, head);
+            weaponController.cam = cam.transform;
         }
     }
 

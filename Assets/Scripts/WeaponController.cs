@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponController : MonoBehaviour {
-    [SerializeField] private Transform cam;
-    [System.NonSerialized] public Weapon weapon;
+    [HideInInspector] public Transform cam;
+    [HideInInspector] public Weapon weapon;
 
     private WeaponHit weaponHit;
     private Queue<WeaponHit> weaponHitHistory = new Queue<WeaponHit>();
-
-    private void Update() {
-        Debug.DrawRay(cam.position, cam.forward * 100f, Color.red);
-    }
 
     public WeaponHit? Shoot() {
         if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hit, 100f)) {
@@ -33,25 +29,30 @@ public class WeaponController : MonoBehaviour {
     }
 
     private void OnDrawGizmos() {
-        int hitI = 0;
-        foreach (WeaponHit hit in weaponHitHistory) {
-            Color color;
-            float radius;
-            if (hitI < weaponHitHistory.Count - 1) {
-                color = Color.yellow;
-                radius = 0.05f;
-            } else {
-                color = Color.red;
-                radius = 0.1f;
-            }
-
-            Gizmos.color = color;
-            Gizmos.DrawSphere(hit.point, radius);
-
+        if (cam) {
             Gizmos.color = Color.red;
-            Gizmos.DrawRay(hit.point, hit.normal * 0.5f);
+            Gizmos.DrawRay(cam.position, cam.forward * 100f);
 
-            hitI++;
+            int hitI = 0;
+            foreach (WeaponHit hit in weaponHitHistory) {
+                Color color;
+                float radius;
+                if (hitI < weaponHitHistory.Count - 1) {
+                    color = Color.yellow;
+                    radius = 0.05f;
+                } else {
+                    color = Color.red;
+                    radius = 0.1f;
+                }
+
+                Gizmos.color = color;
+                Gizmos.DrawSphere(hit.point, radius);
+
+                Gizmos.color = Color.red;
+                Gizmos.DrawRay(hit.point, hit.normal * 0.5f);
+
+                hitI++;
+            }
         }
     }
 }
