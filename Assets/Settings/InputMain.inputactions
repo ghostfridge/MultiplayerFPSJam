@@ -51,6 +51,24 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "ToggleCursorCapture",
+                    "type": "Button",
+                    "id": "34227fa3-580b-4a31-a50a-fbe05118b709",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CaptureCursor",
+                    "type": "Button",
+                    "id": "f58775d7-5fe8-4132-a179-b196f557a3ac",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Shoot",
                     "type": "Value",
                     "id": "043aac8f-6e2b-4eb9-868a-2a8c6a78dce1",
@@ -157,6 +175,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "EquipSecondWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fb285fd3-d79c-42b0-b1db-fa291b2dafa0",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleCursorCapture",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5a1f0fb9-71e5-4059-b7b2-f30025bde013",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CaptureCursor",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

@@ -73,6 +73,24 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""ToggleCursorCapture"",
+                    ""type"": ""Button"",
+                    ""id"": ""34227fa3-580b-4a31-a50a-fbe05118b709"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CaptureCursor"",
+                    ""type"": ""Button"",
+                    ""id"": ""f58775d7-5fe8-4132-a179-b196f557a3ac"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Shoot"",
                     ""type"": ""Value"",
                     ""id"": ""043aac8f-6e2b-4eb9-868a-2a8c6a78dce1"",
@@ -184,6 +202,28 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""fb285fd3-d79c-42b0-b1db-fa291b2dafa0"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleCursorCapture"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5a1f0fb9-71e5-4059-b7b2-f30025bde013"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CaptureCursor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""089c98c8-74f6-4eb7-8d2b-6c3f197a21f7"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -205,6 +245,8 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_EquipPrimaryWeapon = m_Player.FindAction("EquipPrimaryWeapon", throwIfNotFound: true);
         m_Player_EquipSecondWeapon = m_Player.FindAction("EquipSecondWeapon", throwIfNotFound: true);
+        m_Player_ToggleCursorCapture = m_Player.FindAction("ToggleCursorCapture", throwIfNotFound: true);
+        m_Player_CaptureCursor = m_Player.FindAction("CaptureCursor", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
     }
 
@@ -272,6 +314,8 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Crouch;
     private readonly InputAction m_Player_EquipPrimaryWeapon;
     private readonly InputAction m_Player_EquipSecondWeapon;
+    private readonly InputAction m_Player_ToggleCursorCapture;
+    private readonly InputAction m_Player_CaptureCursor;
     private readonly InputAction m_Player_Shoot;
     public struct PlayerActions
     {
@@ -282,6 +326,8 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
         public InputAction @EquipPrimaryWeapon => m_Wrapper.m_Player_EquipPrimaryWeapon;
         public InputAction @EquipSecondWeapon => m_Wrapper.m_Player_EquipSecondWeapon;
+        public InputAction @ToggleCursorCapture => m_Wrapper.m_Player_ToggleCursorCapture;
+        public InputAction @CaptureCursor => m_Wrapper.m_Player_CaptureCursor;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -307,6 +353,12 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
             @EquipSecondWeapon.started += instance.OnEquipSecondWeapon;
             @EquipSecondWeapon.performed += instance.OnEquipSecondWeapon;
             @EquipSecondWeapon.canceled += instance.OnEquipSecondWeapon;
+            @ToggleCursorCapture.started += instance.OnToggleCursorCapture;
+            @ToggleCursorCapture.performed += instance.OnToggleCursorCapture;
+            @ToggleCursorCapture.canceled += instance.OnToggleCursorCapture;
+            @CaptureCursor.started += instance.OnCaptureCursor;
+            @CaptureCursor.performed += instance.OnCaptureCursor;
+            @CaptureCursor.canceled += instance.OnCaptureCursor;
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
@@ -329,6 +381,12 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
             @EquipSecondWeapon.started -= instance.OnEquipSecondWeapon;
             @EquipSecondWeapon.performed -= instance.OnEquipSecondWeapon;
             @EquipSecondWeapon.canceled -= instance.OnEquipSecondWeapon;
+            @ToggleCursorCapture.started -= instance.OnToggleCursorCapture;
+            @ToggleCursorCapture.performed -= instance.OnToggleCursorCapture;
+            @ToggleCursorCapture.canceled -= instance.OnToggleCursorCapture;
+            @CaptureCursor.started -= instance.OnCaptureCursor;
+            @CaptureCursor.performed -= instance.OnCaptureCursor;
+            @CaptureCursor.canceled -= instance.OnCaptureCursor;
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
@@ -356,6 +414,8 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         void OnCrouch(InputAction.CallbackContext context);
         void OnEquipPrimaryWeapon(InputAction.CallbackContext context);
         void OnEquipSecondWeapon(InputAction.CallbackContext context);
+        void OnToggleCursorCapture(InputAction.CallbackContext context);
+        void OnCaptureCursor(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
     }
 }
