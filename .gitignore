@@ -58,6 +58,3 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
-
-# Sandbox scene
-/[Aa]ssets/Scenes/[Ss]andbox.*
