@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponController : MonoBehaviour {
-    [SerializeField] private Transform cam;
-    [System.NonSerialized] public Weapon weapon;
+    [HideInInspector] public Transform cam;
+    [HideInInspector] public Weapon weapon;
 
     private WeaponHit weaponHit;
     private Queue<WeaponHit> weaponHitHistory = new Queue<WeaponHit>();
