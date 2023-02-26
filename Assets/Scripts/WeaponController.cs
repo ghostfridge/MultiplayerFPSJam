@@ -20,9 +20,9 @@ public class WeaponController : MonoBehaviour {
             weaponHitHistory.Enqueue(weaponHit);
             if (weaponHitHistory.Count > 10) weaponHitHistory.Dequeue();
 
-            if (hit.collider.gameObject.TryGetComponent<IDamageable>(out IDamageable damageable)) {
-                float oldHealth = damageable.GetHealth();
-                float newHealth = damageable.TakeDamage(weapon.properties.damage);
+            if (hit.collider.gameObject.TryGetComponent<Actor>(out Actor actor)) {
+                float oldHealth = actor.GetHealth();
+                float newHealth = actor.TakeDamage(weapon.properties.damage);
                 Debug.Log($"{oldHealth} => {newHealth}");
             }
 

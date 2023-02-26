@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e1a7bc6ffe0cb9d408af0cc705dce799, type: 3}
-  m_Name: Weapon 1
+  m_Name: Weapon2
   m_EditorClassIdentifier: 
-  id: weapon1
-  displayName: Weapon 1
+  id: weapon2
+  displayName: Weapon 2
   properties:
-    damage: 10
-    ammo: 30
-    fireRate: 150
-    reloadTime: 3
-    type: {fileID: 11400000, guid: 956703930e4961540b8952c47f9491a6, type: 2}
+    damage: 15
+    ammo: 12
+    fireRate: 50
+    reloadTime: 2
+    type: {fileID: 11400000, guid: b55fa04f84ae35c448e1234b0ca8fed5, type: 2}

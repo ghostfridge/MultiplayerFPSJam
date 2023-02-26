@@ -2,14 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPCEnemy : MonoBehaviour, IDamageable {
-    private float health = 100f;
+public abstract class Actor : MonoBehaviour {
+    [SerializeField] private float health = 100f;
 
+    /// <returns>
+    /// The amount of health the Actor has.
+    /// </returns>
     public float GetHealth() {
         return health;
     }
 
-    public float TakeDamage(float damage) {
+    /// <returns>
+    /// The new amount of health the Actor has.
+    /// </returns>
+    public virtual float TakeDamage(float damage) {
         health -= damage;
         WelfareCheck();
 
@@ -17,7 +23,7 @@ public class NPCEnemy : MonoBehaviour, IDamageable {
     }
 
     /// <returns>
-    /// The new amount of health of the NPC.
+    /// The new amount of health the Actor has.
     /// </returns>
     public float SetHealth(float newHealth) {
         health = newHealth;
@@ -27,7 +33,7 @@ public class NPCEnemy : MonoBehaviour, IDamageable {
     }
 
     /// <returns>
-    /// Whether the NPC is alive or not.
+    /// Whether the Actor is alive or not.
     /// </returns>
     private bool WelfareCheck() {
         if (health <= 0f) {
@@ -39,7 +45,7 @@ public class NPCEnemy : MonoBehaviour, IDamageable {
     }
 
     /// <returns>
-    /// The GameObject that was destroyed.
+    /// The Actor's GameObject that was destroyed.
     /// </returns>
     public GameObject Die() {
         Destroy(gameObject);
