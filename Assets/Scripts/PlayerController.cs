@@ -4,17 +4,17 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CapsuleCollider), typeof(Rigidbody), typeof(WeaponController))]
+[RequireComponent(typeof(CapsuleCollider), typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour {
     public InputMain controls;
     private CapsuleCollider col;
     private Rigidbody rb;
-    private WeaponController weaponController;
     
     private bool isCursorCaptured;
 
     [SerializeField] private Transform head;
     [SerializeField] private GameObject cameraPrefab;
+    [SerializeField] private WeaponController weaponController;
     [SerializeField] private Weapon primaryWeapon;
     [SerializeField] private Weapon secondaryWeapon;
 
@@ -54,7 +54,6 @@ public class PlayerController : NetworkBehaviour {
     private void Start() {
         col = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
-        weaponController = GetComponent<WeaponController>();
 
         weaponController.weapon = primaryWeapon;
         
@@ -71,6 +70,8 @@ public class PlayerController : NetworkBehaviour {
                 } else if (controls.Player.EquipSecondWeapon.triggered) {
                     weaponController.weapon = secondaryWeapon;
                 }
+
+                if (controls.Player.Shoot.triggered) weaponController.Shoot();
             }
         }
     }
