@@ -14,12 +14,13 @@ public class PlayerController : NetworkBehaviour {
     private bool isCursorCaptured;
 
     [SerializeField] private Transform head;
+    [SerializeField] private GameObject cameraPrefab;
     [SerializeField] private Weapon primaryWeapon;
     [SerializeField] private Weapon secondaryWeapon;
 
     [Header("Camera Settings")]
     [SerializeField] private float lookSensitivity;
-    private Vector2 lookRotation;
+    public Vector2 lookRotation;
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed;
@@ -27,10 +28,14 @@ public class PlayerController : NetworkBehaviour {
     [SerializeField] private float groundCheckOffset;
 
     public override void OnNetworkSpawn() {
-        if (IsOwner && controls != null) {
-            controls.Enable();
-            controls.Player.ToggleCursorCapture.performed += ToggleCursorCapture;
-            controls.Player.CaptureCursor.performed += CaptureCursor;
+        if (IsOwner) {
+            if (controls != null) {
+                controls.Enable();
+                controls.Player.ToggleCursorCapture.performed += ToggleCursorCapture;
+                controls.Player.CaptureCursor.performed += CaptureCursor;
+            }
+
+            GameObject.Instantiate(cameraPrefab, head);
         }
     }
 
@@ -57,19 +62,23 @@ public class PlayerController : NetworkBehaviour {
     }
 
     private void Update() {
-        if (isCursorCaptured) {
-            PerformLooking();
+        if (IsOwner) {
+            if (isCursorCaptured) {
+                PerformLooking();
 
-            if (controls.Player.EquipPrimaryWeapon.triggered) {
-                weaponController.weapon = primaryWeapon;
-            } else if (controls.Player.EquipSecondWeapon.triggered) {
-                weaponController.weapon = secondaryWeapon;
+                if (controls.Player.EquipPrimaryWeapon.triggered) {
+                    weaponController.weapon = primaryWeapon;
+                } else if (controls.Player.EquipSecondWeapon.triggered) {
+                    weaponController.weapon = secondaryWeapon;
+                }
             }
         }
     }
 
     private void FixedUpdate() {
-        PerformMovement();
+        if (IsOwner) {
+            PerformMovement();
+        }
     }
 
     private void PerformLooking() {
@@ -79,6 +88,16 @@ public class PlayerController : NetworkBehaviour {
         lookRotation.x = lookRotation.x % 360f;
         lookRotation.y = Mathf.Clamp(lookRotation.y, -90f, 90f);
 
+        if (IsServer) {
+            rb.MoveRotation(Quaternion.Euler(0f, lookRotation.x, 0f));
+            head.localRotation = Quaternion.Euler(-lookRotation.y, 0f, 0f);
+        } else {
+            PerformLookingServerRpc(lookRotation);
+        }
+    }
+
+    [ServerRpc]
+    private void PerformLookingServerRpc(Vector2 lookRotation) {
         rb.MoveRotation(Quaternion.Euler(0f, lookRotation.x, 0f));
         head.localRotation = Quaternion.Euler(-lookRotation.y, 0f, 0f);
     }
@@ -91,6 +110,16 @@ public class PlayerController : NetworkBehaviour {
             velocity = Vector3.ProjectOnPlane(velocity, sweepHit.normal);
         }
 
+        if (IsServer) {
+            if (!IsGrounded()) velocity.y = rb.velocity.y;
+            rb.velocity = velocity;
+        } else {
+            PerformMovementServerRpc(velocity);
+        }
+    }
+
+    [ServerRpc]
+    private void PerformMovementServerRpc(Vector3 velocity) {
         if (!IsGrounded()) velocity.y = rb.velocity.y;
         rb.velocity = velocity;
     }
