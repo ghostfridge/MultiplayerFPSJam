@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 [RequireComponent(typeof(CapsuleCollider), typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour {
@@ -12,6 +13,7 @@ public class PlayerController : NetworkBehaviour {
     
     private bool isCursorCaptured;
 
+    [SerializeField] private CanvasReferences canvas;
     [SerializeField] private Transform head;
     [SerializeField] private WeaponController weaponController;
     [SerializeField] private Weapon primaryWeapon;
@@ -33,8 +35,14 @@ public class PlayerController : NetworkBehaviour {
                 controls.Player.ToggleCursorCapture.performed += ToggleCursorCapture;
                 controls.Player.CaptureCursor.performed += CaptureCursor;
             }
+
+            SetActiveWeapon(primaryWeapon);
+
+            canvas.primaryWeaponUI.GetComponentInChildren<TMP_Text>().text = primaryWeapon.displayName;
+            canvas.secondaryWeaponUI.GetComponentInChildren<TMP_Text>().text = secondaryWeapon.displayName;
         } else {
             Destroy(GetComponentInChildren<Camera>().gameObject);
+            Destroy(canvas.gameObject);
         }
     }
 
@@ -53,8 +61,6 @@ public class PlayerController : NetworkBehaviour {
     private void Start() {
         col = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
-
-        weaponController.weapon = primaryWeapon;
         
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -65,9 +71,9 @@ public class PlayerController : NetworkBehaviour {
                 PerformLooking();
 
                 if (controls.Player.EquipPrimaryWeapon.triggered) {
-                    weaponController.weapon = primaryWeapon;
+                    SetActiveWeapon(primaryWeapon);
                 } else if (controls.Player.EquipSecondWeapon.triggered) {
-                    weaponController.weapon = secondaryWeapon;
+                    SetActiveWeapon(secondaryWeapon);
                 }
 
                 if (controls.Player.Shoot.triggered) weaponController.Shoot();
@@ -78,6 +84,30 @@ public class PlayerController : NetworkBehaviour {
     private void FixedUpdate() {
         if (IsOwner) {
             PerformMovement();
+        }
+    }
+
+    private void SetActiveWeapon(Weapon weapon) {
+        weaponController.weapon = weapon;
+        
+        if (weapon == primaryWeapon) {
+            RectTransform primaryRect = (RectTransform) canvas.primaryWeaponUI;
+            primaryRect.sizeDelta = new Vector2(175f, primaryRect.sizeDelta.y);
+
+            RectTransform secondaryRect = (RectTransform) canvas.secondaryWeaponUI;
+            secondaryRect.sizeDelta = new Vector2(135f, secondaryRect.sizeDelta.y);
+        } else if (weapon == secondaryWeapon) {
+            RectTransform primaryRect = (RectTransform) canvas.primaryWeaponUI;
+            primaryRect.sizeDelta = new Vector2(135f, primaryRect.sizeDelta.y);
+
+            RectTransform secondaryRect = (RectTransform) canvas.secondaryWeaponUI;
+            secondaryRect.sizeDelta = new Vector2(175f, secondaryRect.sizeDelta.y);
+        } else {
+            RectTransform primaryRect = (RectTransform) canvas.primaryWeaponUI;
+            primaryRect.sizeDelta = new Vector2(135f, primaryRect.sizeDelta.y);
+
+            RectTransform secondaryRect = (RectTransform) canvas.secondaryWeaponUI;
+            secondaryRect.sizeDelta = new Vector2(135f, secondaryRect.sizeDelta.y);
         }
     }
 

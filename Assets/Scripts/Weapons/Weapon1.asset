@@ -15,8 +15,9 @@ MonoBehaviour:
   id: weapon1
   displayName: Weapon 1
   properties:
+    type: {fileID: 11400000, guid: 956703930e4961540b8952c47f9491a6, type: 2}
     damage: 10
     ammo: 30
     fireRate: 150
     reloadTime: 3
-    type: {fileID: 11400000, guid: 956703930e4961540b8952c47f9491a6, type: 2}
+    range: 100

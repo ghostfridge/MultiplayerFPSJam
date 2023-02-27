@@ -16,4 +16,5 @@ public struct WeaponProperties {
     public int ammo;
     public float fireRate;
     public float reloadTime;
+    public float range;
 }

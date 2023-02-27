@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour {
     [SerializeField] private Transform cam;
-    [HideInInspector] public Weapon weapon;
+    [SerializeField] public Weapon weapon;
 
     private WeaponHit weaponHit;
     private Queue<WeaponHit> weaponHitHistory = new Queue<WeaponHit>();
 
     public WeaponHit? Shoot() {
-        if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hit, 100f)) {
+        if (weapon == null) throw new System.Exception("No weapon to shoot with!");
+
+        if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hit, weapon.properties.range)) {
             weaponHit = new WeaponHit(hit.collider.gameObject, hit.point, hit.normal, hit.distance);
 
             weaponHitHistory.Enqueue(weaponHit);
@@ -29,9 +31,9 @@ public class WeaponController : MonoBehaviour {
     }
 
     private void OnDrawGizmos() {
-        if (cam) {
+        if (cam && weapon) {
             Gizmos.color = Color.red;
-            Gizmos.DrawRay(cam.position, cam.forward * 100f);
+            Gizmos.DrawRay(cam.position, cam.forward * weapon.properties.range);
 
             int hitI = 0;
             foreach (WeaponHit hit in weaponHitHistory) {
