@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponController : MonoBehaviour {
-    [HideInInspector] public Transform cam;
+    [SerializeField] private Transform cam;
     [HideInInspector] public Weapon weapon;
 
     private WeaponHit weaponHit;

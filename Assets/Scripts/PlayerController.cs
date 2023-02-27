@@ -13,7 +13,6 @@ public class PlayerController : NetworkBehaviour {
     private bool isCursorCaptured;
 
     [SerializeField] private Transform head;
-    [SerializeField] private GameObject cameraPrefab;
     [SerializeField] private WeaponController weaponController;
     [SerializeField] private Weapon primaryWeapon;
     [SerializeField] private Weapon secondaryWeapon;
@@ -34,9 +33,8 @@ public class PlayerController : NetworkBehaviour {
                 controls.Player.ToggleCursorCapture.performed += ToggleCursorCapture;
                 controls.Player.CaptureCursor.performed += CaptureCursor;
             }
-
-            GameObject cam = GameObject.Instantiate(cameraPrefab, head);
-            weaponController.cam = cam.transform;
+        } else {
+            Destroy(GetComponentInChildren<Camera>().gameObject);
         }
     }
 
