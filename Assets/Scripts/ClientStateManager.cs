@@ -19,6 +19,28 @@ public class ClientStateManager : NetworkBehaviour {
         CloseLobbyUI();
     }
 
+    public void StartGame() {
+        if (!IsOwner) {
+            Debug.LogWarning("Only the owner can start the game!");
+            return;
+        }
+
+        StartGameServerRpc();
+    }
+
+    [ServerRpc]
+    public void StartGameServerRpc() {
+        // Check if all clients are connected, map selected, etc
+
+        SpawnCharacterClientRpc();
+    }
+
+    [ClientRpc]
+    public void SpawnCharacterClientRpc() {
+        spawnHandler.SpawnPlayerServerRpc();
+        CloseLobbyUI();
+    }
+
     public override void OnNetworkSpawn() {
         lobbyPlayers.OnListChanged += UpdateLobbyPlayerList;
 
