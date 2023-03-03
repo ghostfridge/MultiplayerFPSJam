@@ -20,17 +20,18 @@ public class ClientStateManager : NetworkBehaviour {
     }
 
     public void StartGame() {
-        if (!IsOwner) {
-            Debug.LogWarning("Only the owner can start the game!");
-            return;
-        }
-
         StartGameServerRpc();
     }
 
-    [ServerRpc]
-    public void StartGameServerRpc() {
-        // Check if all clients are connected, map selected, etc
+    [ServerRpc(RequireOwnership = false)]
+    public void StartGameServerRpc(ServerRpcParams serverRpcParams = default) {
+        // Check if leader, all clients are connected, map selected, etc
+
+        // Temporary check
+        if (NetworkManager.ConnectedClientsIds[0] != serverRpcParams.Receive.SenderClientId) {
+            Debug.LogWarning("Only the owner can start the game!");
+            return;
+        }
 
         SpawnCharacterClientRpc();
     }
