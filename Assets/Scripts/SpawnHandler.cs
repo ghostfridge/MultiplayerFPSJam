@@ -7,7 +7,9 @@ public class SpawnHandler : NetworkBehaviour {
     [SerializeField] private GameObject playerPrefab;
 
     [ServerRpc]
-    public void SpawnPlayerServerRpc(ulong clientId, int team) {
+    public void SpawnPlayerServerRpc(int team, ServerRpcParams serverRpcParams = default) {
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
+
         NetworkObject player = GameObject.Instantiate(playerPrefab, GetSpawnPoint(team), Quaternion.identity).GetComponent<NetworkObject>();
         player.SpawnAsPlayerObject(clientId, true);
     }
