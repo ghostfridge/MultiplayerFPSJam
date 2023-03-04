@@ -52,7 +52,7 @@ public class ClientStateManager : NetworkBehaviour {
         CloseLobbyUI();
     }
 
-    private void ConnectedPlayersListChanged(NetworkListEvent<LobbyPlayer> changeEvent) {
+    private void ConnectedPlayersListChanged(NetworkListEvent<RoomPlayer> changeEvent) {
         UpdateLobbyPlayerList();
     }
 
@@ -60,7 +60,7 @@ public class ClientStateManager : NetworkBehaviour {
         ClearLobbyPlayerList();
 
         for (int i = 0; i < PlayerManager.Singelton.ConnectedPlayers.Count; i++) {
-            LobbyPlayer lobbyPlayer = PlayerManager.Singelton.ConnectedPlayers[i];
+            RoomPlayer lobbyPlayer = PlayerManager.Singelton.ConnectedPlayers[i];
             GameObject playerCard = Instantiate(lobbyPlayerCard, lobbyPlayerList);
             playerCard.GetComponentInChildren<TMP_Text>().text = lobbyPlayer.prettyName;
         }

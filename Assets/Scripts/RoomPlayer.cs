@@ -1,7 +1,7 @@
 using System;
 using Unity.Netcode;
 
-public struct LobbyPlayer : INetworkSerializeByMemcpy, IEquatable<LobbyPlayer> {
+public struct RoomPlayer : INetworkSerializeByMemcpy, IEquatable<RoomPlayer> {
     public ulong clientId;
     public string prettyName {
         get {
@@ -9,11 +9,11 @@ public struct LobbyPlayer : INetworkSerializeByMemcpy, IEquatable<LobbyPlayer> {
         }
     }
 
-    public LobbyPlayer(ulong clientId) {
+    public RoomPlayer(ulong clientId) {
         this.clientId = clientId;
     }
 
-    public bool Equals(LobbyPlayer other) {
+    public bool Equals(RoomPlayer other) {
         return this.clientId == other.clientId;
     }
 }
