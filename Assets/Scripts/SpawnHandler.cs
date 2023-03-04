@@ -9,8 +9,8 @@ public class SpawnHandler : NetworkBehaviour {
 
     [ServerRpc(RequireOwnership = false)]
     public void SpawnPlayerServerRpc(NetworkConnection conn = null) {
-        NetworkObject player = GameObject.Instantiate(playerPrefab, GetSpawnPoint(), Quaternion.identity).GetComponent<NetworkObject>();
-        player.Spawn(player, conn);
+        GameObject player = Instantiate(playerPrefab, GetSpawnPoint(), Quaternion.identity);
+        Spawn(player, conn);
     }
 
     private Vector3 GetSpawnPoint() {

@@ -25,14 +25,14 @@ public class ClientStateManager : NetworkBehaviour {
         // Check if leader, all clients are connected, map selected, etc
 
         if (PlayerManager.Singelton.GetConnectedPlayer(conn.ClientId).isLeader) {
-            SpawnCharacterClientRpc();
+            SpawnCharacterObserverRpc();
         } else {
             Debug.LogWarning("Only the owner can start the game!");
         }
     }
 
     [ObserversRpc]
-    public void SpawnCharacterClientRpc() {
+    public void SpawnCharacterObserverRpc() {
         spawnHandler.SpawnPlayerServerRpc();
         CloseLobbyUI();
     }
