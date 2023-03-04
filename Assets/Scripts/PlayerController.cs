@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using FishNet.Object;
 using TMPro;
 
 [RequireComponent(typeof(CapsuleCollider), typeof(Rigidbody))]
@@ -28,7 +28,9 @@ public class PlayerController : NetworkBehaviour {
     [SerializeField] private float groundDistance;
     [SerializeField] private float groundCheckOffset;
 
-    public override void OnNetworkSpawn() {
+    public override void OnStartClient() {
+        base.OnStartClient();
+
         if (IsOwner) {
             if (controls != null) {
                 controls.Enable();
@@ -46,7 +48,9 @@ public class PlayerController : NetworkBehaviour {
         }
     }
 
-    public override void OnNetworkDespawn() {
+    public override void OnStopClient() {
+        base.OnStopClient();
+
         if (IsOwner && controls != null) {
             controls.Disable();
             controls.Player.ToggleCursorCapture.performed -= ToggleCursorCapture;

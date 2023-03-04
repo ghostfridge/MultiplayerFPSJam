@@ -2,19 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
-using Unity.Netcode.Transports.UTP;
+using FishNet;
+using FishNet.Managing;
+using FishNet.Transporting;
+using FishNet.Transporting.Tugboat;
 
 public class ConnectionGUI : MonoBehaviour {
     private NetworkManager networkManager;
-    private UnityTransport unityTransport;
+    private Transport transport;
 
     private string address = "127.0.0.1";
     private string port = "7777";
 
     private void Awake() {
-        networkManager = GetComponent<NetworkManager>();
-        unityTransport = GetComponent<UnityTransport>();
+        networkManager = InstanceFinder.NetworkManager;
+        transport = networkManager.TransportManager.GetTransport<Tugboat>();
     }
 
     private void OnGUI() {
@@ -28,11 +30,12 @@ public class ConnectionGUI : MonoBehaviour {
             port = GUILayout.TextField(port);
             if (GUILayout.Button("Host")) {
                 UpdateConnectionData();
-                networkManager.StartHost();
+                transport.StartConnection(true);
+                transport.StartConnection(false);
             }
             if (GUILayout.Button("Join")) {
                 UpdateConnectionData();
-                networkManager.StartClient();
+                transport.StartConnection(false);
             }
         } else {
             if (networkManager.IsHost) {
@@ -40,19 +43,25 @@ public class ConnectionGUI : MonoBehaviour {
             } else {
                 GUILayout.Label("Client");
             }
-            GUILayout.Label($"Address: {unityTransport.ConnectionData.Address}");
-            GUILayout.Label($"Port: {unityTransport.ConnectionData.Port}");
-            if (GUILayout.Button("Disconnect")) {
-                networkManager.Shutdown();
+            GUILayout.Label($"Address: {transport.GetClientAddress()}");
+            GUILayout.Label($"Port: {transport.GetPort()}");
+            if (networkManager.IsHost) {
+                if (GUILayout.Button("Shutdown")) {
+                    transport.StopConnection(true);
+                }
+            } else {
+                if (GUILayout.Button("Disconnect")) {
+                    transport.StopConnection(false);
+                }
             }
         }
         GUILayout.EndVertical();
     }
 
     private void UpdateConnectionData() {
-        unityTransport.ConnectionData.Address = address;
-        if (ushort.TryParse(port, out ushort ushPort)) {
-            unityTransport.ConnectionData.Port = ushPort;
+        transport.SetClientAddress(address);
+        if (ushort.TryParse(port, out ushort ushortPort)) {
+            transport.SetPort(ushortPort);
         }
     }
 }

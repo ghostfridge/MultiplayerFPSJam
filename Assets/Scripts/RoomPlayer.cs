@@ -1,8 +1,5 @@
-using System;
-using Unity.Netcode;
-
-public struct RoomPlayer : INetworkSerializeByMemcpy, IEquatable<RoomPlayer> {
-    public ulong clientId;
+public struct RoomPlayer {
+    public int clientId;
     public string prettyName {
         get {
             return $"Player {clientId + 1}{(isLeader ? " (Leader)" : "")}";
@@ -10,7 +7,7 @@ public struct RoomPlayer : INetworkSerializeByMemcpy, IEquatable<RoomPlayer> {
     }
     public bool isLeader;
 
-    public RoomPlayer(ulong clientId) {
+    public RoomPlayer(int clientId) {
         this.clientId = clientId;
         this.isLeader = false;
     }

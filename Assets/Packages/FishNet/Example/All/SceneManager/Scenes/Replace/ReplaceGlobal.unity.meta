@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: fddd81e62368fe9448b0eb0a80da6bb4
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207815
+  packageName: 'Fish-Net: Networking Evolved'
+  packageVersion: 3.4.3
+  assetPath: Assets/FishNet/Example/All/SceneManager/Scenes/Replace/ReplaceGlobal.unity
+  uploadId: 565166

@@ -1,24 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
+using FishNet.Connection;
+using FishNet.Object;
 
 public class SpawnHandler : NetworkBehaviour {
     [SerializeField] private GameObject playerPrefab;
 
     [ServerRpc(RequireOwnership = false)]
-    public void SpawnPlayerServerRpc(ServerRpcParams serverRpcParams = default) {
-        ulong clientId = serverRpcParams.Receive.SenderClientId;
-
-        NetworkObject player = GameObject.Instantiate(playerPrefab, GetSpawnPoint(), Quaternion.identity).GetComponent<NetworkObject>();
-        player.SpawnAsPlayerObject(clientId, true);
+    public void SpawnPlayerServerRpc(NetworkConnection conn = null) {
+        GameObject player = Instantiate(playerPrefab, GetSpawnPoint(), Quaternion.identity);
+        Spawn(player, conn);
     }
 
     private Vector3 GetSpawnPoint() {
         PlayerSpawnpoint[] spawnpoints = FindObjectsByType<PlayerSpawnpoint>(FindObjectsSortMode.None);
         foreach (PlayerSpawnpoint spawnpoint in spawnpoints) {
-            if (!spawnpoint.isOccupied.Value) {
-                spawnpoint.isOccupied.Value = true;
+            if (!spawnpoint.isOccupied) {
+                spawnpoint.isOccupied = true;
                 return spawnpoint.transform.position;
             }
         }
