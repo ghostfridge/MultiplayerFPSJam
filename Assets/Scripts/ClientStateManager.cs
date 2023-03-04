@@ -11,11 +11,7 @@ public class ClientStateManager : NetworkBehaviour {
     [SerializeField] private Transform lobbyPlayerList;
     [SerializeField] private GameObject lobbyPlayerCard;
 
-    public NetworkList<LobbyPlayerData> lobbyPlayers;
-
     private void Start() {
-        lobbyPlayers = new NetworkList<LobbyPlayerData>();
-
         CloseLobbyUI();
     }
 
@@ -43,49 +39,28 @@ public class ClientStateManager : NetworkBehaviour {
     }
 
     public override void OnNetworkSpawn() {
-        lobbyPlayers.OnListChanged += UpdateLobbyPlayerList;
-
-
-        if (IsServer) {
-            lobbyPlayers.Clear();
-            foreach (KeyValuePair<ulong, NetworkClient> client in NetworkManager.Singleton.ConnectedClients) {
-                lobbyPlayers.Add(new LobbyPlayerData(client.Key));
-            }
-
-            NetworkManager.OnClientConnectedCallback += OnClientConnected;
-            NetworkManager.OnClientDisconnectCallback += OnClientDisconnect;
-        }
+        PlayerManager.Singelton.ConnectedPlayers.OnListChanged += ConnectedPlayersListChanged;
+        UpdateLobbyPlayerList();
 
         OpenLobbyUI();
     }
 
     public override void OnNetworkDespawn() {
-        lobbyPlayers.OnListChanged -= UpdateLobbyPlayerList;
-
-        if (IsServer) {
-            NetworkManager.OnClientConnectedCallback -= OnClientConnected;
-            NetworkManager.OnClientDisconnectCallback -= OnClientDisconnect;
-
-            lobbyPlayers.Clear();
-        }
+        PlayerManager.Singelton.ConnectedPlayers.OnListChanged -= ConnectedPlayersListChanged;
 
         ClearLobbyPlayerList();
         CloseLobbyUI();
     }
 
-    private void OnClientConnected(ulong clientId) {
-        lobbyPlayers.Add(new LobbyPlayerData(clientId));
+    private void ConnectedPlayersListChanged(NetworkListEvent<LobbyPlayer> changeEvent) {
+        UpdateLobbyPlayerList();
     }
 
-    private void OnClientDisconnect(ulong clientId) {
-        lobbyPlayers.Remove(new LobbyPlayerData(clientId));
-    }
-
-    private void UpdateLobbyPlayerList(NetworkListEvent<LobbyPlayerData> changeEvent) {
+    private void UpdateLobbyPlayerList() {
         ClearLobbyPlayerList();
 
-        for (int i = 0; i < lobbyPlayers.Count; i++) {
-            LobbyPlayerData lobbyPlayer = lobbyPlayers[i];
+        for (int i = 0; i < PlayerManager.Singelton.ConnectedPlayers.Count; i++) {
+            LobbyPlayer lobbyPlayer = PlayerManager.Singelton.ConnectedPlayers[i];
             GameObject playerCard = Instantiate(lobbyPlayerCard, lobbyPlayerList);
             playerCard.GetComponentInChildren<TMP_Text>().text = lobbyPlayer.prettyName;
         }
@@ -104,22 +79,5 @@ public class ClientStateManager : NetworkBehaviour {
 
     private void CloseLobbyUI() {
         lobbyCanvas.gameObject.SetActive(false);
-    }
-
-    public struct LobbyPlayerData : INetworkSerializeByMemcpy, IEquatable<LobbyPlayerData> {
-        public ulong clientId;
-        public string prettyName {
-            get {
-                return $"Player {clientId + 1}";
-            }
-        }
-
-        public LobbyPlayerData(ulong clientId) {
-            this.clientId = clientId;
-        }
-
-        public bool Equals(LobbyPlayerData other) {
-            return this.clientId == other.clientId;
-        }
     }
 }
