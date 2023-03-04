@@ -15,6 +15,7 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     public override void OnNetworkSpawn() {
+        // DEDSER: Change leadership detection
         if (IsServer) {
             ConnectedPlayers.Clear();
             foreach (KeyValuePair<ulong, NetworkClient> client in NetworkManager.Singleton.ConnectedClients) {
