@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +18,9 @@ public class PlayerManager : NetworkBehaviour {
         if (IsServer) {
             ConnectedPlayers.Clear();
             foreach (KeyValuePair<ulong, NetworkClient> client in NetworkManager.Singleton.ConnectedClients) {
-                ConnectedPlayers.Add(new RoomPlayer(client.Key));
+                RoomPlayer roomPlayer = new RoomPlayer(client.Key);
+                roomPlayer.isLeader = true;
+                ConnectedPlayers.Add(roomPlayer);
             }
 
             NetworkManager.OnClientConnectedCallback += OnClientConnected;
@@ -40,5 +43,9 @@ public class PlayerManager : NetworkBehaviour {
 
     private void OnClientDisconnect(ulong clientId) {
         ConnectedPlayers.Remove(new RoomPlayer(clientId));
+    }
+
+    public RoomPlayer GetConnectedPlayer(ulong clientId) {
+        return ConnectedPlayers.ToArray().ToList().Find((RoomPlayer roomPlayer) => roomPlayer.clientId == clientId);
     }
 }
