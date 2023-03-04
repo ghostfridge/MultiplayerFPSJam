@@ -17,32 +17,38 @@ public class PlayerManager : NetworkBehaviour {
         Singelton = this;
     }
 
-    [Server]
     public override void OnStartClient() {
         base.OnStartClient();
 
-        // DEDSER: Change leadership detection
-        ConnectedPlayers.Clear();
-        foreach (KeyValuePair<int, NetworkConnection> client in NetworkManager.ServerManager.Clients) {
-            RoomPlayer roomPlayer = new RoomPlayer(client.Key);
-            roomPlayer.isLeader = true;
-            ConnectedPlayers.Add(roomPlayer);
-        }
+        if (IsServer) {
+            // DEDSER: Change leadership detection
+            ConnectedPlayers.Clear();
+            foreach (KeyValuePair<int, NetworkConnection> client in NetworkManager.ServerManager.Clients) {
+                RoomPlayer roomPlayer = new RoomPlayer(client.Key);
+                roomPlayer.isLeader = true;
+                ConnectedPlayers.Add(roomPlayer);
+            }
 
-        NetworkManager.ServerManager.OnRemoteConnectionState += OnRemoteConnectionState;
+            NetworkManager.ServerManager.OnRemoteConnectionState += OnRemoteConnectionState;
+        }
     }
 
-    [Server]
     public override void OnStopClient() {
         base.OnStopClient();
 
-        NetworkManager.ServerManager.OnRemoteConnectionState -= OnRemoteConnectionState;
+        if (IsServer) {
+            NetworkManager.ServerManager.OnRemoteConnectionState -= OnRemoteConnectionState;
 
-        ConnectedPlayers.Clear();
+            ConnectedPlayers.Clear();
+        }
     }
 
     private void OnRemoteConnectionState(NetworkConnection conn, RemoteConnectionStateArgs args) {
-        // ConnectedPlayers.Add(new RoomPlayer(clientId));
+        if (args.ConnectionState == RemoteConnectionState.Started) {
+            ConnectedPlayers.Add(new RoomPlayer(conn.ClientId));
+        } else if (args.ConnectionState == RemoteConnectionState.Stopped) {
+            ConnectedPlayers.RemoveAt(ConnectedPlayers.FindIndex((RoomPlayer roomPlayer) => roomPlayer.clientId == conn.ClientId));
+        }
     }
 
     public RoomPlayer GetConnectedPlayer(int clientId) {
