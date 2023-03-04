@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
+using FishNet.Object;
+using FishNet.Object.Synchronizing;
 
 public class PlayerSpawnpoint : NetworkBehaviour {
-    [HideInInspector] public NetworkVariable<bool> isOccupied = new NetworkVariable<bool>(writePerm: NetworkVariableWritePermission.Owner);
+    [SyncVar]
+    [HideInInspector] public bool isOccupied;
 }

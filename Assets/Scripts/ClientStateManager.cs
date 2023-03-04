@@ -1,8 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
+using FishNet.Connection;
+using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using TMPro;
 
 public class ClientStateManager : NetworkBehaviour {
@@ -20,37 +21,41 @@ public class ClientStateManager : NetworkBehaviour {
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void StartGameServerRpc(ServerRpcParams serverRpcParams = default) {
+    public void StartGameServerRpc(NetworkConnection conn = null) {
         // Check if leader, all clients are connected, map selected, etc
 
-        if (PlayerManager.Singelton.GetConnectedPlayer(serverRpcParams.Receive.SenderClientId).isLeader) {
+        if (PlayerManager.Singelton.GetConnectedPlayer(conn.ClientId).isLeader) {
             SpawnCharacterClientRpc();
         } else {
             Debug.LogWarning("Only the owner can start the game!");
         }
     }
 
-    [ClientRpc]
+    [ObserversRpc]
     public void SpawnCharacterClientRpc() {
         spawnHandler.SpawnPlayerServerRpc();
         CloseLobbyUI();
     }
 
-    public override void OnNetworkSpawn() {
-        PlayerManager.Singelton.ConnectedPlayers.OnListChanged += ConnectedPlayersListChanged;
+    public override void OnStartClient() {
+        base.OnStartClient();
+
+        PlayerManager.Singelton.ConnectedPlayers.OnChange += ConnectedPlayersListChanged;
         UpdateLobbyPlayerList();
 
         OpenLobbyUI();
     }
 
-    public override void OnNetworkDespawn() {
-        PlayerManager.Singelton.ConnectedPlayers.OnListChanged -= ConnectedPlayersListChanged;
+    public override void OnStopClient() {
+        base.OnStopClient();
+
+        PlayerManager.Singelton.ConnectedPlayers.OnChange -= ConnectedPlayersListChanged;
 
         ClearLobbyPlayerList();
         CloseLobbyUI();
     }
 
-    private void ConnectedPlayersListChanged(NetworkListEvent<RoomPlayer> changeEvent) {
+    private void ConnectedPlayersListChanged(SyncListOperation op, int index, RoomPlayer oldItem, RoomPlayer newItem, bool asServer) {
         UpdateLobbyPlayerList();
     }
 
