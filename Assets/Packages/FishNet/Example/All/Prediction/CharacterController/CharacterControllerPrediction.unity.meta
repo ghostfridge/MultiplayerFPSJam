@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ec1a6e85f57626a4cbacaf306766bdfd
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207815
+  packageName: 'Fish-Net: Networking Evolved'
+  packageVersion: 3.4.3
+  assetPath: Assets/FishNet/Example/All/Prediction/CharacterController/CharacterControllerPrediction.unity
+  uploadId: 565166

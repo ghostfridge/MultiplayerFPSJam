@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a35bce0c956282a42a90a04b25492fb6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207815
+  packageName: 'Fish-Net: Networking Evolved'
+  packageVersion: 3.4.3
+  assetPath: Assets/FishNet/Example/All/SceneManager/Materials/Red.mat
+  uploadId: 565166
