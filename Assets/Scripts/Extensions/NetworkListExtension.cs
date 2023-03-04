@@ -12,4 +12,12 @@ public static class NetworkListExtension {
         }
         return array;
     }
+
+    public static List<T> ToList<T>(this NetworkList<T> networkList) where T : unmanaged, IEquatable<T> {
+        List<T> list = new List<T>(networkList.Count);
+        for (int i = 0; i < networkList.Count; i++) {
+            list.Add(networkList[i]);
+        }
+        return list;
+    }
 }
