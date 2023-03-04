@@ -49,4 +49,8 @@ public class PlayerManager : NetworkBehaviour {
     public RoomPlayer GetConnectedPlayer(ulong clientId) {
         return ConnectedPlayers.ToList().Find((RoomPlayer roomPlayer) => roomPlayer.clientId == clientId);
     }
+
+    public RoomPlayer GetCurrentPlayer() {
+        return ConnectedPlayers.ToList().Find((RoomPlayer roomPlayer) => roomPlayer.clientId == NetworkManager.LocalClientId);
+    }
 }
