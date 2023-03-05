@@ -1,17 +1,64 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using FishNet.Connection;
 using FishNet.Object;
 using TMPro;
 
 public class ChatSystem : NetworkBehaviour {
+    public InputMain controls;
+
+    [SerializeField] private GameObject container;
     [SerializeField] private Transform messageContainer;
     [SerializeField] private GameObject chatMessage;
+    [SerializeField] private TMP_InputField chatInput;
 
-    [ContextMenu("Send test message")]
-    public void SendGlobalMessage() {
-        SendGlobalMessageServerRpc("Hello world!");
+    private void Awake() {
+        controls = new InputMain();
+
+        CloseChat();
+    }
+
+    public override void OnStartClient() {
+        base.OnStartClient();
+
+        if (controls != null) {
+            controls.Enable();
+            controls.Player.OpenChat.performed += OpenChat;
+        }
+
+        chatInput.onSubmit.AddListener(SendGlobalMessage);
+    }
+
+    public override void OnStopClient() {
+        base.OnStopClient();
+
+        if (IsOwner && controls != null) {
+            controls.Disable();
+            controls.Player.OpenChat.performed -= OpenChat;
+        }
+
+        CloseChat();
+    }
+
+    public void OpenChat(InputAction.CallbackContext ctx) {
+        container.SetActive(true);
+
+        chatInput.Select();
+        chatInput.ActivateInputField();
+    }
+
+    public void CloseChat() {
+        chatInput.DeactivateInputField();
+
+        container.SetActive(false);
+    }
+
+    public void SendGlobalMessage(string input) {
+        chatInput.text = "";
+        SendGlobalMessageServerRpc(input);
+        CloseChat();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -22,8 +69,9 @@ public class ChatSystem : NetworkBehaviour {
 
     [ObserversRpc]
     public void SendGlobalMessageObserverRpc(ChatMessage msg) {
-        Debug.Log($"{msg.sender}: {msg.content}");
         TMP_Text messageText = Instantiate(chatMessage, messageContainer).GetComponentInChildren<TMP_Text>();
         messageText.text = $"<b>{msg.sender}:</b> {msg.content}";
+
+        Debug.Log($"New message ({msg.sender}: {msg.content})");
     }
 }

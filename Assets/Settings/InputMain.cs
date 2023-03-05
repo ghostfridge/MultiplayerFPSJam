@@ -98,6 +98,15 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""OpenChat"",
+                    ""type"": ""Button"",
+                    ""id"": ""286abbad-c482-463e-862c-8f48cc9943f9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -232,6 +241,17 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""321ed552-7b07-4874-8330-76565ff48027"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenChat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -248,6 +268,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         m_Player_ToggleCursorCapture = m_Player.FindAction("ToggleCursorCapture", throwIfNotFound: true);
         m_Player_CaptureCursor = m_Player.FindAction("CaptureCursor", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
+        m_Player_OpenChat = m_Player.FindAction("OpenChat", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -317,6 +338,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ToggleCursorCapture;
     private readonly InputAction m_Player_CaptureCursor;
     private readonly InputAction m_Player_Shoot;
+    private readonly InputAction m_Player_OpenChat;
     public struct PlayerActions
     {
         private @InputMain m_Wrapper;
@@ -329,6 +351,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         public InputAction @ToggleCursorCapture => m_Wrapper.m_Player_ToggleCursorCapture;
         public InputAction @CaptureCursor => m_Wrapper.m_Player_CaptureCursor;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
+        public InputAction @OpenChat => m_Wrapper.m_Player_OpenChat;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -362,6 +385,9 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
+            @OpenChat.started += instance.OnOpenChat;
+            @OpenChat.performed += instance.OnOpenChat;
+            @OpenChat.canceled += instance.OnOpenChat;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -390,6 +416,9 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
+            @OpenChat.started -= instance.OnOpenChat;
+            @OpenChat.performed -= instance.OnOpenChat;
+            @OpenChat.canceled -= instance.OnOpenChat;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -417,5 +446,6 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         void OnToggleCursorCapture(InputAction.CallbackContext context);
         void OnCaptureCursor(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
+        void OnOpenChat(InputAction.CallbackContext context);
     }
 }
