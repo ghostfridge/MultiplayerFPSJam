@@ -234,6 +234,7 @@ MonoBehaviour:
   chatMessage: {fileID: 533241429484897683, guid: 415a397a81ad4154c878509890829afd,
     type: 3}
   chatInput: {fileID: 614583832472439166}
+  isOpen: 0
 --- !u!114 &8646715737957694041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495,7 +496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}

@@ -107,6 +107,15 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SendMessage"",
+                    ""type"": ""Button"",
+                    ""id"": ""d101d362-eaa6-4cc2-910a-22ac8b508211"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -245,11 +254,22 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""321ed552-7b07-4874-8330-76565ff48027"",
-                    ""path"": ""<Keyboard>/t"",
+                    ""path"": ""<Keyboard>/enter"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""OpenChat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bbc0cadc-f83d-4070-b0fd-4705a5551561"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SendMessage"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -269,6 +289,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         m_Player_CaptureCursor = m_Player.FindAction("CaptureCursor", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         m_Player_OpenChat = m_Player.FindAction("OpenChat", throwIfNotFound: true);
+        m_Player_SendMessage = m_Player.FindAction("SendMessage", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -339,6 +360,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_CaptureCursor;
     private readonly InputAction m_Player_Shoot;
     private readonly InputAction m_Player_OpenChat;
+    private readonly InputAction m_Player_SendMessage;
     public struct PlayerActions
     {
         private @InputMain m_Wrapper;
@@ -352,6 +374,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         public InputAction @CaptureCursor => m_Wrapper.m_Player_CaptureCursor;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         public InputAction @OpenChat => m_Wrapper.m_Player_OpenChat;
+        public InputAction @SendMessage => m_Wrapper.m_Player_SendMessage;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -388,6 +411,9 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
             @OpenChat.started += instance.OnOpenChat;
             @OpenChat.performed += instance.OnOpenChat;
             @OpenChat.canceled += instance.OnOpenChat;
+            @SendMessage.started += instance.OnSendMessage;
+            @SendMessage.performed += instance.OnSendMessage;
+            @SendMessage.canceled += instance.OnSendMessage;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -419,6 +445,9 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
             @OpenChat.started -= instance.OnOpenChat;
             @OpenChat.performed -= instance.OnOpenChat;
             @OpenChat.canceled -= instance.OnOpenChat;
+            @SendMessage.started -= instance.OnSendMessage;
+            @SendMessage.performed -= instance.OnSendMessage;
+            @SendMessage.canceled -= instance.OnSendMessage;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -447,5 +476,6 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         void OnCaptureCursor(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
         void OnOpenChat(InputAction.CallbackContext context);
+        void OnSendMessage(InputAction.CallbackContext context);
     }
 }

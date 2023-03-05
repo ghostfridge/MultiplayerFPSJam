@@ -15,6 +15,8 @@ public class ChatSystem : NetworkBehaviour {
     [SerializeField] private GameObject chatMessage;
     [SerializeField] private TMP_InputField chatInput;
 
+    public bool isOpen;
+
     private void Awake() {
         controls = new InputMain();
 
@@ -26,10 +28,9 @@ public class ChatSystem : NetworkBehaviour {
 
         if (controls != null) {
             controls.Enable();
+            controls.Player.SendMessage.performed += SendGlobalMessage;
             controls.Player.OpenChat.performed += OpenChat;
         }
-
-        chatInput.onSubmit.AddListener(SendGlobalMessage);
     }
 
     public override void OnStopClient() {
@@ -37,6 +38,7 @@ public class ChatSystem : NetworkBehaviour {
 
         if (IsOwner && controls != null) {
             controls.Disable();
+            controls.Player.SendMessage.performed -= SendGlobalMessage;
             controls.Player.OpenChat.performed -= OpenChat;
         }
 
@@ -44,6 +46,8 @@ public class ChatSystem : NetworkBehaviour {
     }
 
     public void OpenChat(InputAction.CallbackContext ctx) {
+        isOpen = true;
+
         container.GetComponent<Image>().enabled = true;
         chatInput.gameObject.SetActive(true);
 
@@ -52,15 +56,19 @@ public class ChatSystem : NetworkBehaviour {
     }
 
     public void CloseChat() {
+        isOpen = false;
+
         container.GetComponent<Image>().enabled = false;
         chatInput.gameObject.SetActive(false);
 
         chatInput.DeactivateInputField();
     }
 
-    public void SendGlobalMessage(string input) {
+    public void SendGlobalMessage(InputAction.CallbackContext ctx) {
+        if (!isOpen || chatInput.text == "") return;
+
+        SendGlobalMessageServerRpc(chatInput.text);
         chatInput.text = "";
-        SendGlobalMessageServerRpc(input);
         CloseChat();
     }
 
