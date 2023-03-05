@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using FishNet.Connection;
 using FishNet.Object;
 using TMPro;
@@ -43,16 +44,18 @@ public class ChatSystem : NetworkBehaviour {
     }
 
     public void OpenChat(InputAction.CallbackContext ctx) {
-        container.SetActive(true);
+        container.GetComponent<Image>().enabled = true;
+        chatInput.gameObject.SetActive(true);
 
         chatInput.Select();
         chatInput.ActivateInputField();
     }
 
     public void CloseChat() {
-        chatInput.DeactivateInputField();
+        container.GetComponent<Image>().enabled = false;
+        chatInput.gameObject.SetActive(false);
 
-        container.SetActive(false);
+        chatInput.DeactivateInputField();
     }
 
     public void SendGlobalMessage(string input) {
