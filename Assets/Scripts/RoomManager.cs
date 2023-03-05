@@ -8,8 +8,8 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 
-public class PlayerManager : NetworkBehaviour {
-    public static PlayerManager Singelton { get; private set; }
+public class RoomManager : NetworkBehaviour {
+    public static RoomManager Singelton { get; private set; }
     [SyncObject]
     public readonly SyncList<RoomPlayer> ConnectedPlayers = new SyncList<RoomPlayer>();
 

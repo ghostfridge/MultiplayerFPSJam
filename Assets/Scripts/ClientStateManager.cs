@@ -24,7 +24,7 @@ public class ClientStateManager : NetworkBehaviour {
     public void StartGameServerRpc(NetworkConnection conn = null) {
         // Check if leader, all clients are connected, map selected, etc
 
-        if (PlayerManager.Singelton.GetConnectedPlayer(conn.ClientId).isLeader) {
+        if (RoomManager.Singelton.GetConnectedPlayer(conn.ClientId).isLeader) {
             SpawnCharacterObserverRpc();
         } else {
             Debug.LogWarning("Only the owner can start the game!");
@@ -40,7 +40,7 @@ public class ClientStateManager : NetworkBehaviour {
     public override void OnStartClient() {
         base.OnStartClient();
 
-        PlayerManager.Singelton.ConnectedPlayers.OnChange += ConnectedPlayersListChanged;
+        RoomManager.Singelton.ConnectedPlayers.OnChange += ConnectedPlayersListChanged;
         UpdateLobbyPlayerList();
 
         OpenLobbyUI();
@@ -49,7 +49,7 @@ public class ClientStateManager : NetworkBehaviour {
     public override void OnStopClient() {
         base.OnStopClient();
 
-        PlayerManager.Singelton.ConnectedPlayers.OnChange -= ConnectedPlayersListChanged;
+        RoomManager.Singelton.ConnectedPlayers.OnChange -= ConnectedPlayersListChanged;
 
         ClearLobbyPlayerList();
         CloseLobbyUI();
@@ -62,8 +62,8 @@ public class ClientStateManager : NetworkBehaviour {
     private void UpdateLobbyPlayerList() {
         ClearLobbyPlayerList();
 
-        for (int i = 0; i < PlayerManager.Singelton.ConnectedPlayers.Count; i++) {
-            RoomPlayer lobbyPlayer = PlayerManager.Singelton.ConnectedPlayers[i];
+        for (int i = 0; i < RoomManager.Singelton.ConnectedPlayers.Count; i++) {
+            RoomPlayer lobbyPlayer = RoomManager.Singelton.ConnectedPlayers[i];
             GameObject playerCard = Instantiate(lobbyPlayerCard, lobbyPlayerList);
             playerCard.GetComponentInChildren<TMP_Text>().text = lobbyPlayer.prettyName;
         }
