@@ -10,8 +10,6 @@ public class PlayerController : NetworkBehaviour {
     public InputMain controls;
     private CapsuleCollider col;
     private Rigidbody rb;
-    
-    private bool isCursorCaptured;
 
     [SerializeField] private CanvasReferences canvas;
     [SerializeField] private Transform head;
@@ -34,8 +32,6 @@ public class PlayerController : NetworkBehaviour {
         if (IsOwner) {
             if (controls != null) {
                 controls.Enable();
-                controls.Player.ToggleCursorCapture.performed += ToggleCursorCapture;
-                controls.Player.CaptureCursor.performed += CaptureCursor;
             }
 
             SetActiveWeapon(primaryWeapon);
@@ -51,10 +47,10 @@ public class PlayerController : NetworkBehaviour {
     public override void OnStopClient() {
         base.OnStopClient();
 
-        if (IsOwner && controls != null) {
-            controls.Disable();
-            controls.Player.ToggleCursorCapture.performed -= ToggleCursorCapture;
-            controls.Player.CaptureCursor.performed -= CaptureCursor;
+        if (IsOwner) {
+            if (controls != null) {
+                controls.Disable();
+            }
         }
     }
 
@@ -71,17 +67,15 @@ public class PlayerController : NetworkBehaviour {
 
     private void Update() {
         if (IsOwner) {
-            if (isCursorCaptured) {
-                PerformLooking();
+            PerformLooking();
 
-                if (controls.Player.EquipPrimaryWeapon.triggered) {
-                    SetActiveWeapon(primaryWeapon);
-                } else if (controls.Player.EquipSecondWeapon.triggered) {
-                    SetActiveWeapon(secondaryWeapon);
-                }
-
-                if (controls.Player.Shoot.triggered) weaponController.Shoot();
+            if (controls.Player.EquipPrimaryWeapon.triggered) {
+                SetActiveWeapon(primaryWeapon);
+            } else if (controls.Player.EquipSecondWeapon.triggered) {
+                SetActiveWeapon(secondaryWeapon);
             }
+
+            if (controls.Player.Shoot.triggered) weaponController.Shoot();
         }
     }
 
@@ -162,19 +156,6 @@ public class PlayerController : NetworkBehaviour {
         float radius = col.radius;
         Vector3 origin = transform.position + Vector3.up * (groundCheckOffset + radius);
         return Physics.SphereCast(origin, radius, Vector3.down, out RaycastHit groundHit, groundCheckOffset + groundDistance);
-    }
-
-    private void ToggleCursorCapture(InputAction.CallbackContext ctx) {
-        isCursorCaptured = !isCursorCaptured;
-        Cursor.lockState = isCursorCaptured ? CursorLockMode.Locked : CursorLockMode.None;
-    }
-
-    private void CaptureCursor(InputAction.CallbackContext ctx) {
-        // Only capture if there are no current interactions
-        if (GUIUtility.hotControl == 0) {
-            isCursorCaptured = true;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
     }
 
     private void OnDrawGizmos() {
